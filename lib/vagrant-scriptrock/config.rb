@@ -11,6 +11,7 @@ module VagrantPlugins
 			attr_accessor :secret_key
 			attr_accessor :connect_url
 			attr_accessor :ssh_pubkey
+			attr_accessor :name_prefix
 
 			def initialize
 				@debug = false
@@ -21,6 +22,7 @@ module VagrantPlugins
 				@secret_key = UNSET_VALUE
 				@connect_url = UNSET_VALUE
 				@ssh_pubkey = UNSET_VALUE
+				@name_prefix = UNSET_VALUE
 			end
 
 			def load_vars_from_yml
@@ -76,6 +78,9 @@ module VagrantPlugins
 				get_ssh_pubkey()
 				if unset(@first_hop)
 					@first_hop = ""
+				end
+				if unset(@name_prefix)
+					@name_prefix = "vagrant"
 				end
 			end
 

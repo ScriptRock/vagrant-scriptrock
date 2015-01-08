@@ -21,7 +21,7 @@ module VagrantPlugins
 			end
 
 			def guardrail_name
-				return "vagrant #{@machine.name} #{@machine.id}"
+				return "#{@root_config.scriptrock.name_prefix} #{@machine.name}"
 			end
 
 			def guardrail_auth_headers
@@ -37,7 +37,7 @@ module VagrantPlugins
 					response = HTTParty.get(url, :headers => guardrail_auth_headers)
 					responseJson = JSON.parse(response.body)
 					if response.code == 200
-						puts "ScriptRock: node already exists, id #{responseJson["id"]} name #{guardrail_name}"
+						puts "ScriptRock: node already exists, id #{responseJson["id"]} name '#{guardrail_name}'"
 						return responseJson
 					end
 				end
@@ -54,7 +54,7 @@ module VagrantPlugins
 					})
 				responseJson = JSON.parse(response.body)
 				if response.code == 201
-					puts "ScriptRock: created new node, id #{responseJson["id"]} name #{guardrail_name}"
+					puts "ScriptRock: created new node, id #{responseJson["id"]} name '#{guardrail_name}'"
 					return responseJson
 				else
 					throw "ScriptRock Guardrail create node error code #{response.code} body: #{response.body}"
@@ -80,7 +80,9 @@ module VagrantPlugins
 			def guardrail_delete
 				begin
 					node = guardrail_lookup_and_show
-					if node != nil
+					if node == nil
+						puts "ScriptRock: node with name '#{guardrail_name}' not found"
+					else
 						url = "#{@root_config.scriptrock.connect_url}/api/v1/nodes/#{node["id"]}.json"
 						response = HTTParty.delete(url, :headers => guardrail_auth_headers)
 						if response.code == 204
