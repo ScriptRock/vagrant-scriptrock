@@ -13,7 +13,7 @@ module VagrantPlugins
 			attr_accessor :ssh_pubkey
 
 			def initialize
-				@debug = true#false
+				@debug = false
 				puts "config initialize" if @debug
 				@scriptrock_yml_path = "~/.scriptrock/scriptrock.yml"
 				@first_hop = UNSET_VALUE

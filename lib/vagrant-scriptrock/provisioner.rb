@@ -5,7 +5,7 @@ module VagrantPlugins
 	module ScriptRock
 		class Provisioner < Vagrant.plugin("2", :provisioner)
 			def initialize(machine, config)
-				@debug = true#false
+				@debug = false
 				@machine = machine
 				@root_config = machine.config
 				puts "provision initialize config" if @debug
