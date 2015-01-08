@@ -4,6 +4,10 @@ require 'httparty'
 module VagrantPlugins
 	module ScriptRock
 		class Provisioner < Vagrant.plugin("2", :provisioner)
+
+			class GuardrailPrivateKeyInstallError < Vagrant::Errors::VagrantError
+			end
+
 			def initialize(machine, config)
 				@debug = false
 				@machine = machine
@@ -107,9 +111,13 @@ module VagrantPlugins
 				puts "provision provision" if @debug
 
 				# insert the guardrail public key onto the target node if it is not already present
+				puts "Checking for and possibly installing Guardrail public key in ~/.ssh/authorized_keys..."
+				pk = @root_config.scriptrock.ssh_pubkey
+				key_install_script = "mkdir -p ~/.ssh && " +
+					"(grep -q -s '#{pk}' ~/.ssh/authorized_keys || echo '#{pk}' >> ~/.ssh/authorized_keys) && "+
+					"grep -q -s '#{pk}' ~/.ssh/authorized_keys"
 				@machine.communicate.tap do |comm|
-					pk = @root_config.scriptrock.ssh_pubkey
-					comm.execute("mkdir -p ~/.ssh && grep -q -s '#{pk}' ~/.ssh/authorized_keys || echo '#{pk}' >> ~/.ssh/authorized_keys")
+					comm.execute(key_install_script, error_class: GuardrailPrivateKeyInstallError)
 				end
 
 				# add this node to guardrail if not already present, then update to use the current credentials + forwarded port
