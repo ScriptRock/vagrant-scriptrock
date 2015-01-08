@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Mark Sheahan"]
   spec.email         = ["mark.sheahan@scriptrock.com"]
   spec.homepage      = "https://github.com/ScriptRock/vagrant-scriptrock"
-  spec.summary       = "ScriptRock Guardrail node registry/deletion when VMs are provisioned/destroyed"
+  spec.summary       = "Vagrant plugin for ScriptRock Guardrail node registry/deletion when Vagrant VMs are provisioned/destroyed"
   spec.description   = '''This plugin will install a Guardrail public key ~/.ssh/authorized_keys
 on the instantiated vm, register the VM as a new node on the target Guardrail site,
 and delete the Guardrail node when the VM is destroyed.'''
