@@ -16,7 +16,7 @@ module VagrantPlugins
 			def initialize
 				@debug = false
 				puts "config initialize" if @debug
-				@scriptrock_yml_path = "~/.scriptrock/scriptrock.yml"
+				@scriptrock_yml_path = "~/.scriptrock/vagrant.yml"
 				@first_hop = UNSET_VALUE
 				@api_key = UNSET_VALUE
 				@secret_key = UNSET_VALUE
@@ -27,12 +27,13 @@ module VagrantPlugins
 
 			def load_vars_from_yml
 				if unset(@api_key) || unset(@secret_key) || unset(@connect_url)
-					if unset(@scriptrock_yml_path)
+					path = @scriptrock_yml_path
+					if unset(path)
 						puts "ScriptRock yml config path un-set, not loading values from yml"
-					elsif !File.exist?(File.expand_path(@scriptrock_yml_path))
-						puts "ScriptRock yml file '#{@scriptrock_yml_path}' doesn't exist, not loading values from yml"
+					elsif !File.exist?(File.expand_path(path))
+						puts "ScriptRock yml file '#{path}' doesn't exist, not loading values from yml"
 					else
-						yml = YAML.load(File.read(File.expand_path(@scriptrock_yml_path)))
+						yml = YAML.load(File.read(File.expand_path(path)))
 						puts yml if @debug
 						if unset(@api_key)
 							@api_key = yml["api_key"]
